@@ -264,7 +264,14 @@ elif st.session_state.active_page == "Referee Explorer":
         )
         st.plotly_chart(ref_bar)
 
-        # ------------------ PAGE 3: ABOUT US ------------------ #
+# ------------------ PAGE 4: SUMMARY ------------------ #
+elif st.session_state.active_page == "Summary":
+    st.markdown("## Summary & Key Takeaways")
+    st.markdown("""
+    Insert Article Here... STAY TUNED!!!
+    """)
+
+     # ------------------ PAGE 3: ABOUT US ------------------ #
 elif st.session_state.active_page == "About Us":
     st.markdown("## About Us")
     st.markdown("""
@@ -278,14 +285,4 @@ elif st.session_state.active_page == "About Us":
 
     Tools: Python, Pandas, Plotly, and Streamlit  
     Source: [nflpenalties.com](https://nflpenalties.com)
-    """)
-
-# ------------------ PAGE 4: SUMMARY ------------------ #
-elif st.session_state.active_page == "Summary":
-    st.markdown("## Summary & Key Takeaways")
-    st.markdown("""
-    This dashboard provides a data-driven look at how NFL referees may exhibit unconscious bias favoring home teams.  
-    Through scatter plots, bar charts, and per-referee metrics, we uncovered patterns in officiating behavior.
-
-    Stay tuned for our full analysis and conclusions coming soon!
     """)
