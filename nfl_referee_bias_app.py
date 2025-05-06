@@ -60,6 +60,16 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+st.markdown("""
+    <div class="sidebar-sub">
+        This dashboard uses real NFL penalty data...
+    </div>
+    <div class="sidebar-footer">
+        © 2024 Ryan Weiss, Michael Perazzo & Tyler Costin
+    </div>
+""", unsafe_allow_html=True)
+
 # Load and preprocess data
 data = pd.read_csv("nfl_penalties_2024.csv")
 data = data.iloc[1:]
