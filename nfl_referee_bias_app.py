@@ -70,7 +70,7 @@ data.columns = [
 ]
 data["Total Penalties"] = data["Total Penalties"].astype(int)
 data["Total Yards"] = data["Total Yards"].astype(int)
-data["Bias Difference"] = data["Away Flags Per Game"] - data["Home Flags Per Game"]
+data["Bias Difference"] = pd.to_numeric(data["Away Flags Per Game"], errors="coerce") - pd.to_numeric(data["Home Flags Per Game"], errors="coerce")
 data["Bias Type"] = np.where(data["Bias Difference"] > 0, "Favors Home", "Favors Away")
 
 # Navigation state
