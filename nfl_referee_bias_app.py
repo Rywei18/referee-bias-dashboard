@@ -147,8 +147,7 @@ if st.session_state.active_page == "Overview":
 
     st.markdown("""
     <p style='font-size: 13.5px;'>
-        This scatter plot compares penalties called per game on home vs away teams.  
-        Red dots = more penalties on away teams (home bias).  
+        This scatter plot compares average penalties per game called on home teams versus away teams by referee. Points above the diagonal line indicate more penalties called on away teams. Most referees fall slightly above the line, suggesting a general trend toward home-team favoritism. 
     </p>
     """, unsafe_allow_html=True)
 
@@ -195,7 +194,7 @@ if st.session_state.active_page == "Overview":
 
     st.markdown("""
     <p style='font-size: 13.5px; line-height: 1.7;'>
-    This chart isolates referees who showed measurable home-team favoritism — those who called more penalties on away teams than home teams. These officials all have a positive bias score, and their ranking here highlights how strong that tendency was during the 2024 season.
+    This chart isolates referees with a positive bias score, meaning they called more penalties on away teams. It ranks officials by the strength of that bias. Carl Cheffers, Clay Martin, and Shawn Smith show the highest home-team favoritism. 
     </p>
     """, unsafe_allow_html=True)
 
