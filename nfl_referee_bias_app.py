@@ -8,6 +8,7 @@ from PIL import Image
 
 st.set_page_config(page_title="NFL Referee Bias Dashboard", layout="wide")
 
+# Styling for font, layout, and visible sidebar toggle
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
@@ -35,7 +36,6 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Sidebar hamburger always visible */
     [data-testid="collapsedControl"] {
         visibility: visible !important;
         opacity: 1 !important;
@@ -44,26 +44,27 @@ st.markdown("""
         z-index: 1000;
     }
 
-    /* Sidebar style */
+    [data-testid="collapsedControl"] svg {
+        color: #002244 !important;
+        width: 1.5rem;
+        height: 1.5rem;
+        stroke-width: 2;
+    }
+
     [data-testid="stSidebar"] {
         background-color: #f4f6f9;
         padding: 20px;
         border-right: 1px solid #ddd;
+        min-width: 220px;
     }
 
-    /* Main content spacing */
-    .main .block-container {
-        padding-left: 3rem;
-        padding-right: 2rem;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+    .reportview-container .main .block-container {
+        padding: 2rem 3rem;
     }
     </style>
 """, unsafe_allow_html=True)
 
-
-
-# Load and preprocess data
+# Load data
 data = pd.read_csv("nfl_penalties_2024.csv")
 data = data.iloc[1:]
 data.columns = [
@@ -73,16 +74,18 @@ data.columns = [
 ]
 data["Total Penalties"] = data["Total Penalties"].astype(int)
 data["Total Yards"] = data["Total Yards"].astype(int)
+
+# Fix for numeric bias score
 data["Bias Difference"] = pd.to_numeric(data["Away Flags Per Game"], errors="coerce") - pd.to_numeric(data["Home Flags Per Game"], errors="coerce")
 data["Bias Type"] = np.where(data["Bias Difference"] > 0, "Favors Home", "Favors Away")
 
-# Navigation state
+# Navigation
 if "active_page" not in st.session_state:
     st.session_state.active_page = "Overview"
 
-# Sidebar navigation
 with st.sidebar:
-    st.title("Navigation")
+    st.title("NFL Referee Bias")
+
     if st.button("Overview"):
         st.session_state.active_page = "Overview"
     if st.button("Referee Explorer"):
@@ -93,12 +96,13 @@ with st.sidebar:
         st.session_state.active_page = "Summary"
 
     st.markdown("""
-        <div class="sidebar-sub">
-            This dashboard uses real NFL penalty data...
-        </div>
-        <div class="sidebar-footer">
-            © 2024 Ryan Weiss, Michael Perazzo & Tyler Costin
-        </div>
+    <div style='font-size: 12.5px; margin-top: 20px;'>
+        This dashboard uses real NFL penalty data to explore referee bias trends.<br>
+        Built with Python, Streamlit, and Plotly.
+    </div>
+    <div style='font-size: 11px; color: #666; margin-top: 25px;'>
+        © 2024 Ryan Weiss, Michael Perazzo & Tyler Costin
+    </div>
     """, unsafe_allow_html=True)
 
 # ------------------ PAGE 1: OVERVIEW ------------------ #
@@ -106,7 +110,7 @@ if st.session_state.active_page == "Overview":
     st.markdown("""
         <div style="background-color:#002244;padding:25px;border-radius:10px;margin-bottom:30px;">
             <h1 style="color:#F0F2F6;text-align:center;">NFL Referee Bias Dashboard</h1>
-            <p style="color:#D6E4F0;text-align:center;font-size:18px;">Analyzing trends in officiating across the 2024 NFL Season</p>
+            <p style="color:#D6E4F0;text-align:center;font-size:16px;">Analyzing trends in officiating across the 2024 NFL Season</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -114,9 +118,9 @@ if st.session_state.active_page == "Overview":
 
     st.markdown("""
         <h2 style='text-align: center; color: #002244;'>Do NFL Referees Show Bias Towards Home Teams?</h2>
-        <p style='text-align: center; font-size: 15px; line-height: 1.5; color: #333333; max-width: 800px; margin: auto;'>
-            This dashboard explores potential <strong>home-field bias</strong> among NFL referees during the 2024 season.<br>
-            Data source: <a href='https://nflpenalties.com' target='_blank'>nflpenalties.com</a>.
+        <p style='text-align: center; font-size: 14px; max-width: 800px; margin: auto;'>
+            This dashboard explores <strong>home-field bias</strong> among NFL referees in the 2024 season.<br>
+            Data from <a href='https://nflpenalties.com' target='_blank'>nflpenalties.com</a>.
         </p>
     """, unsafe_allow_html=True)
 
@@ -144,10 +148,10 @@ if st.session_state.active_page == "Overview":
     st.plotly_chart(scatter_fig, use_container_width=True)
 
     st.markdown("""
-    <p>
-    This scatter plot compares how many penalties referees called on home vs. away teams.  
-    Red dots = more calls on away teams (suggesting home bias).  
-    <strong>Bill Vinovich</strong> shows one of the strongest home biases.
+    <p style='font-size: 13.5px;'>
+        This scatter plot compares penalties called per game on home vs away teams.  
+        Red dots = more penalties on away teams (home bias).  
+        <strong>Bill Vinovich</strong> stands out as one of the most home-biased referees.
     </p>
     """, unsafe_allow_html=True)
 
@@ -157,7 +161,7 @@ if st.session_state.active_page == "Overview":
         "Bias Score Range": ["< 0", "≈ 0", "> 0"],
         "Meaning": [
             "More calls against home team",
-            "Roughly equal",
+            "Evenly split",
             "More calls against away team"
         ]
     })
@@ -221,7 +225,7 @@ elif st.session_state.active_page == "Referee Explorer":
         fig_gauge = go.Figure(go.Indicator(
             mode="gauge+number+delta",
             value=float(ref_stats["Bias Difference"]),
-            delta={'reference': 0, 'increasing': {'color': "red"}, 'decreasing': {'color': "blue"}},
+            delta={'reference': 0},
             gauge={
                 'axis': {'range': [-2, 2]},
                 'bar': {'color': "darkblue"},
@@ -233,38 +237,22 @@ elif st.session_state.active_page == "Referee Explorer":
             },
             title={'text': "Bias Score (Away - Home)"}
         ))
-        st.plotly_chart(fig_gauge, use_container_width=False)
-
-        bar_data = pd.DataFrame({
-            "Type": ["Home", "Away"],
-            "Flags Per Game": [ref_stats["Home Flags Per Game"], ref_stats["Away Flags Per Game"]]
-        })
-        ref_bar = px.bar(
-            bar_data,
-            x="Type",
-            y="Flags Per Game",
-            color="Type",
-            color_discrete_map={"Home": "#013369", "Away": "#D50A0A"},
-            title="Penalties Per Game"
-        )
-        st.plotly_chart(ref_bar, use_container_width=False)
+        st.plotly_chart(fig_gauge)
 
 # ------------------ PAGE 3: ABOUT US ------------------ #
 elif st.session_state.active_page == "About Us":
     st.markdown("## About Us")
     st.markdown("""
-    This dashboard was created as part of our class project to explore whether NFL referees show bias when officiating games.  
+    This dashboard was created as part of a class project to explore referee officiating trends.  
     **Team Members**  
     - Ryan Weiss  
     - Michael Perazzo  
     - Tyler Costin  
-    Tools: Python, Streamlit, Pandas, Plotly  
-    Source: [nflpenalties.com](https://nflpenalties.com)
+    Data: [nflpenalties.com](https://nflpenalties.com)  
+    Tools: Python, Streamlit, Plotly, Pandas
     """)
 
 # ------------------ PAGE 4: SUMMARY ------------------ #
 elif st.session_state.active_page == "Summary":
     st.markdown("## Summary & Key Takeaways")
-    st.markdown("""
-    Final summary article coming soon.
-    """)
+    st.markdown("Final article coming soon.")
