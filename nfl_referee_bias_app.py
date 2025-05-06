@@ -8,63 +8,62 @@ from PIL import Image
 
 st.set_page_config(page_title="NFL Referee Bias Dashboard", layout="wide")
 
-# Styling for font, layout, and visible sidebar toggle
+# Font + Sidebar polish
 st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
-        font-size: 13.5px;
-        line-height: 1.6;
-        color: #002244;
-        background-color: #F9FAFB;
-    }
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #002244;
+    background-color: #F9FAFB;
+}
 
-    h1 {
-        font-size: 32px;
-        font-weight: 600;
-    }
+[data-testid="stSidebar"] {
+    background-color: #F0F2F6;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    min-width: 220px;
+}
 
-    h2 {
-        font-size: 24px;
-        font-weight: 600;
-    }
+[data-testid="collapsedControl"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    right: 1rem;
+    top: 1rem;
+    z-index: 1000;
+}
 
-    h3 {
-        font-size: 18px;
-        font-weight: 600;
-    }
+[data-testid="collapsedControl"] svg {
+    color: #002244 !important;
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke-width: 2;
+}
 
-    [data-testid="collapsedControl"] {
-        visibility: visible !important;
-        opacity: 1 !important;
-        right: 1rem;
-        top: 1rem;
-        z-index: 1000;
-    }
-
-    [data-testid="collapsedControl"] svg {
-        color: #002244 !important;
-        width: 1.5rem;
-        height: 1.5rem;
-        stroke-width: 2;
-    }
-
-    [data-testid="stSidebar"] {
-        background-color: #f4f6f9;
-        padding: 20px;
-        border-right: 1px solid #ddd;
-        min-width: 220px;
-    }
-
-    .reportview-container .main .block-container {
-        padding: 2rem 3rem;
-    }
-    </style>
+.sidebar-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #002244;
+}
+.sidebar-sub {
+    font-size: 13px;
+    color: #444444;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.sidebar-footer {
+    font-size: 12px;
+    color: #888888;
+    margin-top: 30px;
+}
+</style>
 """, unsafe_allow_html=True)
 
-# Load data
+# Load and preprocess data
 data = pd.read_csv("nfl_penalties_2024.csv")
 data = data.iloc[1:]
 data.columns = [
@@ -74,17 +73,16 @@ data.columns = [
 ]
 data["Total Penalties"] = data["Total Penalties"].astype(int)
 data["Total Yards"] = data["Total Yards"].astype(int)
-
-# Fix for numeric bias score
 data["Bias Difference"] = pd.to_numeric(data["Away Flags Per Game"], errors="coerce") - pd.to_numeric(data["Home Flags Per Game"], errors="coerce")
 data["Bias Type"] = np.where(data["Bias Difference"] > 0, "Favors Home", "Favors Away")
 
-# Navigation
+# Navigation state
 if "active_page" not in st.session_state:
     st.session_state.active_page = "Overview"
 
+# Sidebar Navigation
 with st.sidebar:
-    st.title("NFL Referee Bias")
+    st.markdown('<div class="sidebar-title">NFL Referee Bias</div>', unsafe_allow_html=True)
 
     if st.button("Overview"):
         st.session_state.active_page = "Overview"
@@ -96,16 +94,16 @@ with st.sidebar:
         st.session_state.active_page = "Summary"
 
     st.markdown("""
-    <div style='font-size: 12.5px; margin-top: 20px;'>
-        This dashboard uses real NFL penalty data to explore referee bias trends.<br>
-        Built with Python, Streamlit, and Plotly.
-    </div>
-    <div style='font-size: 11px; color: #666; margin-top: 25px;'>
-        © 2024 Ryan Weiss, Michael Perazzo & Tyler Costin
-    </div>
+        <div class="sidebar-sub">
+            This dashboard uses real NFL penalty data to explore referee bias trends.<br>
+            Built with Python, Streamlit, and Plotly.
+        </div>
+        <div class="sidebar-footer">
+            © 2024 Ryan Weiss, Michael Perazzo & Tyler Costin
+        </div>
     """, unsafe_allow_html=True)
 
-# ------------------ PAGE 1: OVERVIEW ------------------ #
+    # ------------------ PAGE 1: OVERVIEW ------------------ #
 if st.session_state.active_page == "Overview":
     st.markdown("""
         <div style="background-color:#002244;padding:25px;border-radius:10px;margin-bottom:30px;">
@@ -190,7 +188,7 @@ if st.session_state.active_page == "Overview":
     home_bias_chart.update_layout(xaxis_tickangle=-45)
     st.plotly_chart(home_bias_chart, use_container_width=True)
 
-# ------------------ PAGE 2: REFEREE EXPLORER ------------------ #
+    # ------------------ PAGE 2: REFEREE EXPLORER ------------------ #
 elif st.session_state.active_page == "Referee Explorer":
     st.subheader("Explore a Specific Referee")
     selected_ref = st.selectbox("Select a Referee", data["Name"])
@@ -239,20 +237,45 @@ elif st.session_state.active_page == "Referee Explorer":
         ))
         st.plotly_chart(fig_gauge)
 
-# ------------------ PAGE 3: ABOUT US ------------------ #
+        bar_data = pd.DataFrame({
+            "Type": ["Home", "Away"],
+            "Flags Per Game": [
+                float(ref_stats["Home Flags Per Game"]),
+                float(ref_stats["Away Flags Per Game"])
+            ]
+        })
+        ref_bar = px.bar(
+            bar_data,
+            x="Type",
+            y="Flags Per Game",
+            color="Type",
+            color_discrete_map={"Home": "#013369", "Away": "#D50A0A"},
+            title="Penalties Per Game"
+        )
+        st.plotly_chart(ref_bar)
+
+        # ------------------ PAGE 3: ABOUT US ------------------ #
 elif st.session_state.active_page == "About Us":
     st.markdown("## About Us")
     st.markdown("""
-    This dashboard was created as part of a class project to explore referee officiating trends.  
+    This dashboard was created as part of a class project to explore whether NFL referees show bias when officiating games.  
+    Our goal was to analyze real penalty data from the 2024 NFL season and present it in a clear and engaging way.
+
     **Team Members**  
     - Ryan Weiss  
     - Michael Perazzo  
-    - Tyler Costin  
-    Data: [nflpenalties.com](https://nflpenalties.com)  
-    Tools: Python, Streamlit, Plotly, Pandas
+    - Tyler Costin
+
+    Tools: Python, Pandas, Plotly, and Streamlit  
+    Source: [nflpenalties.com](https://nflpenalties.com)
     """)
 
 # ------------------ PAGE 4: SUMMARY ------------------ #
 elif st.session_state.active_page == "Summary":
     st.markdown("## Summary & Key Takeaways")
-    st.markdown("Final article coming soon.")
+    st.markdown("""
+    This dashboard provides a data-driven look at how NFL referees may exhibit unconscious bias favoring home teams.  
+    Through scatter plots, bar charts, and per-referee metrics, we uncovered patterns in officiating behavior.
+
+    Stay tuned for our full analysis and conclusions coming soon!
+    """)
