@@ -149,7 +149,6 @@ if st.session_state.active_page == "Overview":
     <p style='font-size: 13.5px;'>
         This scatter plot compares penalties called per game on home vs away teams.  
         Red dots = more penalties on away teams (home bias).  
-        <strong>Bill Vinovich</strong> stands out as one of the most home-biased referees.
     </p>
     """, unsafe_allow_html=True)
 
@@ -179,10 +178,6 @@ if st.session_state.active_page == "Overview":
     st.markdown("""
     <p style='font-size: 13.5px; line-height: 1.7;'>
     This bar chart ranks referees by their average penalty bias score: the difference between penalties called per game on away teams versus home teams. Positive values indicate a referee called more penalties on away teams (favoring home teams), while negative values suggest they penalized home teams more.
-
-    We see a range of values across referees, but most show some level of home-team favoritism. Several referees, like <strong>Bill Vinovich</strong>, <strong>Craig Wrolstad</strong>, and <strong>Clay Martin</strong>, display higher-than-average bias scores, meaning they consistently called more penalties against away teams. In contrast, a few referees land in neutral or slightly negative territory, such as <strong>Ron Torbert</strong>.
-
-    This chart offers a side-by-side comparison of all officials, helping us quickly identify outliers and evaluate consistency across the league. It's a useful reference for analysts, teams, and fans interested in accountability.
     </p>
     """, unsafe_allow_html=True)
 
@@ -201,10 +196,6 @@ if st.session_state.active_page == "Overview":
     st.markdown("""
     <p style='font-size: 13.5px; line-height: 1.7;'>
     This chart isolates referees who showed measurable home-team favoritism — those who called more penalties on away teams than home teams. These officials all have a positive bias score, and their ranking here highlights how strong that tendency was during the 2024 season.
-
-    <Strong>Bill Vinovich</strong> once again leads the list with a noticeable gap, suggesting a consistent officiating trend in favor of home teams. Other names that appear prominently include <strong>Carl Cheffers</strong> and <strong>Clay Martin</strong>, both of whom averaged over 1 extra penalty per game against away teams.
-
-    While bias does not necessarily imply intent, it can still shape outcomes — especially in closely contested games. By spotlighting the most home-favoring referees, this chart provides a focused view of where potential advantages may have emerged due to officiating trends.
     </p>
     """, unsafe_allow_html=True)
 
