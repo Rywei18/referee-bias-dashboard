@@ -280,6 +280,13 @@ elif st.session_state.active_page == "Summary":
     
     This analysis confirms that while some referees maintained relatively balanced penalty calls, several exhibited statistically significant home-team bias. These patterns, revealed through objective analysis of 2024 penalty data, suggest that individual officiating tendencies can meaningfully impact game dynamics, and warrant continued attention.
     """)
+    st.subheader("Referee Bias Scores Table")
+    st.markdown("This table ranks each referee by their average bias score (Away - Home flags per game).")
+
+    bias_table = data[["Name", "Games", "Home Flags Per Game", "Away Flags Per Game", "Bias Difference"]]
+    bias_table = bias_table.sort_values("Bias Difference", ascending=False)
+    bias_table.columns = ["Referee", "Games", "Home Flags/Game", "Away Flags/Game", "Bias Score"]
+    st.dataframe(bias_table, use_container_width=True)
 
      # ------------------ PAGE 3: ABOUT US ------------------ #
 elif st.session_state.active_page == "About Us":
