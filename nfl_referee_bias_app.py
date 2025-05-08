@@ -268,7 +268,16 @@ elif st.session_state.active_page == "Referee Explorer":
 elif st.session_state.active_page == "Summary":
     st.markdown("## Summary & Key Takeaways")
     st.markdown("""
-    Insert Article Here... STAY TUNED!!!
+    Public skepticism toward NFL officiating has intensified, with fans frequently questioning whether referees show favoritism toward different teams. These concerns, often voiced on social media during controversial games, prompted this investigation into officiating trends across the 2024 NFL season. Using official penalty data sourced from nflpenalties.com, we built an interactive dashboard with Python, Streamlit, and Plotly to explore referee-by-referee bias. Our objective was to assess whether individual referees demonstrated patterns of bias based on the distribution of penalties between home and away teams. 
+    The analysis revealed measurable variation in officiating tendencies among referees. Referees were assigned a bias score representing the average difference in penalties assessed per game (away minus home). A positive score indicates more calls made against away teams (favoring home teams), while a negative score indicates more penalties against home teams (favoring away teams). A score near zero suggests balanced officiating.
+    
+    The dashboard includes a search functionality allowing users to look up any referee by name. Upon entering a referee’s name into the search bar, the tool immediately returns that official’s corresponding bias score. This interactive element makes the data easily accessible and provides fans, analysts, and researchers with a clear view of how specific referees called games throughout the season.
+    
+    Several referees showed a notable lean toward the home team. For example, Carl Cheffers exhibited the strongest home bias with a bias score exceeding +1.4, followed closely by Clay Martin, who also had a significantly positive score. Other officials with marked home favoritism included Shawn Smith, Alex Kemp, and Brad Allen, all with bias differences comfortably above +0.7. These results suggest a consistent trend where certain referees disproportionately penalize away teams.
+    In contrast, Clete Blakeman and Tra Blake stood out on the opposite end of the spectrum, with negative bias scores nearing -1, indicating more calls made against home teams in games they officiated. Several others, including Ron Torbert and Bill Vinovich, showed minor negative scores but remained closer to neutral.
+    Importantly, the overall distribution of referee bias scores leaned slightly positive, supporting the hypothesis that on average, referees tend to favor home teams. However, not all referees demonstrated this trend, highlighting that officiating bias is more dependent on the individual than a league-wide standard.
+    
+    This analysis confirms that while some referees maintained relatively balanced penalty calls, several exhibited statistically significant home-team bias. These patterns, revealed through objective analysis of 2024 penalty data, suggest that individual officiating tendencies can meaningfully impact game dynamics, and warrant continued attention.
     """)
 
      # ------------------ PAGE 3: ABOUT US ------------------ #
