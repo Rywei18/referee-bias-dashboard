@@ -88,10 +88,10 @@ with st.sidebar:
         st.session_state.active_page = "Overview"
     if st.button("Referee Explorer"):
         st.session_state.active_page = "Referee Explorer"
-    if st.button("About Us"):
-        st.session_state.active_page = "About Us"
     if st.button("Summary"):
         st.session_state.active_page = "Summary"
+    if st.button("About Us"):
+        st.session_state.active_page = "About Us"
 
     st.markdown("""
         <div class="sidebar-sub">
